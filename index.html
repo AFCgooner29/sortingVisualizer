@@ -1,0 +1,236 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        #visualizer-tab {
+            border-style: solid;
+            height: 410px;
+            width: 100%;
+        }
+
+        .data-bar {
+            border-top: 3px solid;
+            border-color: grey;
+            margin-top: 2px;
+        }
+
+        .dropdown {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        var algoSelected = "bubble-sort";
+        var algoStart;
+        var algoEnd;
+        var max;
+        $(document).ready(function () {
+            $('.dropdown-item').click(function () {
+                algoSelected = this.id;
+                if (algoSelected == 'bubble-sort') {
+                    $('#algo-selected').text("Bubble Sort");
+                }
+                else if (algoSelected == 'merge-sort') {
+                    $('#algo-selected').text("Merge Sort");
+                }
+                else if (algoSelected == 'quick-sort') {
+                    $('#algo-selected').text("Quick Sort");
+                }
+            });
+        });
+        var data = [];
+        var oldData = [];
+        var sortIt = () => {
+            algoStart = new Date().getTime();
+            if (algoSelected == 'bubble-sort') {
+                bubbleSort(data);
+            }
+            else if (algoSelected == 'merge-sort') {
+                bubbleSort(data);
+            }
+            else if (algoSelected == 'quick-sort') {
+                quickSort(data, 0, data.length - 1);
+            }
+            algoEnd = new Date().getTime();
+            $('#alg-end').text("Sorting ended in " + (algoEnd - algoStart) + " Milliseconds");
+        }
+        var revert = () => {
+            data = [...oldData];
+            processArray(data);
+        }
+        var createRandomArray = (size) => {
+            var inputArr = [];
+            for (var i = 0; i < size; i++) {
+                inputArr.push(Math.random() * size);
+            }
+            processArray(inputArr);
+            max = Math.max(...inputArr);
+            data = inputArr;
+            oldData = [...inputArr];
+        }
+        var createaAscArray = (size) => {
+            var inputArr = [];
+            for (var i = 0; i < size; i++) {
+                inputArr.push(i);
+            }
+            processArray(inputArr);
+            max = Math.max(...inputArr);
+            data = inputArr;
+            oldData = [...inputArr];
+        }
+        var createDescArray = (size) => {
+            var inputArr = [];
+            for (var i = size; i > 0; i--) {
+                inputArr.push(i);
+            }
+            processArray(inputArr);
+            max = Math.max(...inputArr);
+            data = inputArr;
+            oldData = [...inputArr];
+        }
+        var visualize = (obj) => {
+            setTimeout(function () {
+                $("#bar-" + obj.id1).css("border-color", "red");
+                $("#bar-" + obj.id2).css("border-color", "red");
+                $("#bar-" + obj.id1).css("width", obj.perc1 + "%");
+                $("#bar-" + obj.id2).css("width", obj.perc2 + "%");
+                setTimeout(function () {
+                    $("#bar-" + obj.id1).css("border-color", "grey");
+                    $("#bar-" + obj.id2).css("border-color", "grey");
+                }, 500)
+            }, 2000);
+        }
+        var bubbleSort = (inputArr) => {
+            //algoStart = new Date().getTime();
+            //var max = Math.max(...inputArr);
+            let len = inputArr.length;
+            for (let i = 0; i < len; i++) {
+                for (let j = 0; j < len; j++) {
+                    if (inputArr[j] > inputArr[j + 1]) {
+                        swap(inputArr, j, j + 1);
+                        // setTimeout(function(){
+                        //     visualize(tempObj);
+                        // },200);
+                        /*$("#bar-"+j).css("width",((inputArr[j]/max)*100)+"%");
+                        $("#bar-"+(j+1)).css("width",((inputArr[j+1]/max)*100)+"%");*/
+                    }
+                }
+            }
+            return inputArr;
+        };
+        var processArray = (inputArr) => {
+            max = Math.max(...inputArr);
+            $("#visualizer-tab").empty();
+            $('#alg-end').text('');
+            algoEnd = undefined;
+            algoStart = undefined;
+            for (var i = 0; i < inputArr.length; i++) {
+                var perc = (inputArr[i] / max) * 100;
+                $("#visualizer-tab").append('<div class="data-bar" id="bar-' + i + '"></div>');
+                $("#bar-" + i).css("width", perc + "%");
+            }
+        }
+        var swap = (items, leftIndex, rightIndex) => {
+            var temp = items[leftIndex];
+            items[leftIndex] = items[rightIndex];
+            items[rightIndex] = temp;
+            var tempObj = {
+                id1: leftIndex,
+                id2: rightIndex,
+                perc1: ((items[leftIndex] / max) * 100),
+                perc2: ((items[rightIndex] / max) * 100)
+            };
+            visualize(tempObj);
+        }
+        var quickSort = (items, left, right) => {
+            var index;
+            if (items.length > 1) {
+                index = partition(items, left, right); //index returned from partition
+                if (left < index - 1) { //more elements on the left side of the pivot
+                    quickSort(items, left, index - 1);
+                }
+                if (index < right) { //more elements on the right side of the pivot
+                    quickSort(items, index, right);
+                }
+            }
+            return items;
+        }
+        var partition = (items, left, right) => {
+            var pivot = items[Math.floor((right + left) / 2)], //middle element
+                i = left, //left pointer
+                j = right; //right pointer
+            while (i <= j) {
+                while (items[i] < pivot) {
+                    i++;
+                }
+                while (items[j] > pivot) {
+                    j--;
+                }
+                if (i <= j) {
+                    swap(items, i, j); //swap two elements
+                    i++;
+                    j--;
+                }
+            }
+            return i;
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="jumbotron text-center row">
+        <div class="col-8">
+            <h1>Sorting Visualizer</h1>
+            <p>You can use different algorithms and visualize the sorting process</p>
+        </div>
+        <div class="col-4">
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    Select Sorting Algorithm
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" id="bubble-sort" href="#">Bubble Sort</a>
+                    <a class="dropdown-item" id="merge-sort" href="#">Merge Sort</a>
+                    <a class="dropdown-item" id="quick-sort" href="#">Quick Sort</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    Select Array Configuration
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" id="bubble-sort" onclick="createRandomArray(80)">Random</a>
+                    <a class="dropdown-item" id="merge-sort" onclick="createaAscArray(80)">Ascending</a>
+                    <a class="dropdown-item" id="quick-sort" onclick="createDescArray(80)">Descending</a>
+                </div>
+            </div>
+            <div class="row">
+                <span class="col-6"><button type="button" class="btn btn-primary"
+                        onclick="sortIt()">Sort</button></span>
+                <span class="col-6"><button type="button" class="btn btn-primary" onclick="revert()">Revert
+                        Array</button></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div id="visualizer-tab" class="col-sm-6">
+
+            </div>
+            <div class="col-sm-6">
+                <h3>Current Selected Algorithm is <span id="algo-selected">Bubble Sort</span></h3>
+                <h5 id="alg-end"></h5>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
