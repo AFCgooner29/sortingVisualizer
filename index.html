@@ -31,7 +31,7 @@
         var algoEnd;
         var max;
         $(document).ready(function () {
-            $('.dropdown-item').click(function () {
+            $('.sort-selector').click(function () {
                 algoSelected = this.id;
                 if (algoSelected == 'bubble-sort') {
                     $('#algo-selected').text("Bubble Sort");
@@ -196,9 +196,9 @@
                     Select Sorting Algorithm
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" id="bubble-sort" href="#">Bubble Sort</a>
-                    <a class="dropdown-item" id="merge-sort" href="#">Merge Sort</a>
-                    <a class="dropdown-item" id="quick-sort" href="#">Quick Sort</a>
+                    <a class="dropdown-item sort-selector" id="bubble-sort">Bubble Sort</a>
+                    <a class="dropdown-item sort-selector" id="merge-sort">Merge Sort</a>
+                    <a class="dropdown-item sort-selector" id="quick-sort">Quick Sort</a>
                 </div>
             </div>
             <div class="dropdown">
@@ -206,9 +206,9 @@
                     Select Array Configuration
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" id="bubble-sort" onclick="createRandomArray(80)">Random</a>
-                    <a class="dropdown-item" id="merge-sort" onclick="createaAscArray(80)">Ascending</a>
-                    <a class="dropdown-item" id="quick-sort" onclick="createDescArray(80)">Descending</a>
+                    <a class="dropdown-item" onclick="createRandomArray(80)">Random</a>
+                    <a class="dropdown-item" onclick="createaAscArray(80)">Ascending</a>
+                    <a class="dropdown-item" onclick="createDescArray(80)">Descending</a>
                 </div>
             </div>
             <div class="row">
